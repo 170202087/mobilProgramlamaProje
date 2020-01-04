@@ -1,5 +1,7 @@
 {
   "name": "serviceMap",
-  "integrations": {},
+  "integrations": {
+    "cordova": {}
+  },
   "type": "angular"
 }
