@@ -2,8 +2,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { NavController } from '@ionic/angular';
-import { AuthenticateService } from '../services/authentication.service';
-import { FirestoreService, Passenger, Driver } from '../services/firestore.service';
+import { AuthenticateService } from '../../services/authentication.service';
+import { FirestoreService, Passenger, Driver } from '../../services/firestore.service';
+import { AuthService } from "../auth.service";
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-login',
   templateUrl: './login.page.html',
@@ -16,9 +18,11 @@ export class LoginPage implements OnInit {
 
   constructor(
     private navCtrl: NavController,
-    private authService: AuthenticateService,
+    private authService2: AuthenticateService,
     private formBuilder: FormBuilder,
     private fireStore: FirestoreService,
+    private router: Router,
+    private authService: AuthService
   ) { }
 
   ngOnInit() {
@@ -49,7 +53,7 @@ export class LoginPage implements OnInit {
 
 
   loginUser(value) {
-    this.authService.loginUser(value)
+    this.authService2.loginUser(value)
       .then(res => {
         console.log(res);
         this.errorMessage = "";
@@ -83,7 +87,14 @@ export class LoginPage implements OnInit {
                     var messagesWithID = [msg]
                     this.fireStore.user = new Passenger(data.ServiceMail, data.Mail, messagesWithID);
 
-                    this.navCtrl.navigateForward('/tabs');
+                    this.authService.login().subscribe(() => {
+                      if (this.authService.isLoggedIn) {
+            
+                        let redirect = this.authService.redirectUrl ? this.router.parseUrl(this.authService.redirectUrl) : '/tabs';
+            
+                        this.router.navigateByUrl(redirect);
+                      }
+                    });
 
                   }
                 });
@@ -125,7 +136,14 @@ export class LoginPage implements OnInit {
                 });
                 console.log(allMessages, " Servis Mesajlar")
                 this.fireStore.user = new Driver(data.Mail, data.UserMails, allMessages);
-                this.navCtrl.navigateForward('/tabs');
+                this.authService.login().subscribe(() => {
+                  if (this.authService.isLoggedIn) {
+        
+                    let redirect = this.authService.redirectUrl ? this.router.parseUrl(this.authService.redirectUrl) : '/tabs';
+        
+                    this.router.navigateByUrl(redirect);
+                  }
+                });
                 sub.unsubscribe();
               });
             }

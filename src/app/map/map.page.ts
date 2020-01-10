@@ -3,7 +3,8 @@ import { NavController } from '@ionic/angular';
 import { AuthenticateService } from '../services/authentication.service';
 import { Geolocation, GeolocationOptions } from '@ionic-native/geolocation/ngx';
 import { FirestoreService, Passenger } from '../services/firestore.service';
-
+import { AuthService } from "../auth/auth.service";
+import { Router } from '@angular/router';
 declare var google;
 
 @Component({
@@ -21,9 +22,11 @@ export class MapPage implements OnInit, AfterContentInit {
   @ViewChild('mapElement', { static: true }) mapElement;
   constructor(
     private navCtrl: NavController,
-    private authService: AuthenticateService,
+    private authService2: AuthenticateService,
     private geolocation: Geolocation,
-    private fireStore: FirestoreService
+    private fireStore: FirestoreService,
+    private authService: AuthService,
+    private router: Router
   ) {
     this.userLocation = { lat: 0, lng: 0 };
     if (this.fireStore.user == null) {
@@ -116,11 +119,12 @@ export class MapPage implements OnInit, AfterContentInit {
   }
 
   logout() {
-    this.authService.logoutUser()
+    this.authService2.logoutUser()
       .then(res => {
         console.log(res);
         clearInterval(this.timer);
-        this.navCtrl.navigateBack('');
+        this.authService.logout();
+        this.router.navigate(['/tabs/login']);
       })
       .catch(error => {
         console.log(error);
