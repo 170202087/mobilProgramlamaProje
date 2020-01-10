@@ -1,0 +1,7 @@
+{
+  "name": "serviceMap",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "angular"
+}

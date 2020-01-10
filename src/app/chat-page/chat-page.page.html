@@ -1,0 +1,49 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      {{id}}
+    </ion-title>
+    <ion-buttons slot="primary">
+      <ion-button (click)="logout()">
+        <ion-icon name="log-out"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content >
+
+  <ion-list>
+    <ng-container *ngFor="let chatBlob of messages">
+
+      <div *ngIf="userType == 's'"  class="container">
+
+        <div *ngIf="chatBlob['from'] == 'service'" class="rightBox">
+          {{chatBlob.message}}</div>
+        <div *ngIf="chatBlob['from'] == 'user'" class="leftBox">
+          {{chatBlob.message}} </div>
+      </div>
+      <div *ngIf="userType == 'k'" class="container">
+
+        <div *ngIf="chatBlob['from'] == 'service'" class="leftBox">
+          {{chatBlob.message}} </div>
+        <div *ngIf="chatBlob['from'] == 'user'" class="rightBox">
+          {{chatBlob.message}} </div>
+      </div>
+    </ng-container>
+  </ion-list>
+
+
+  <div class="messageBox">
+    <ion-item>
+      <ion-input placeholder="Mesaj" [(ngModel)]="messageBoxInput"></ion-input>
+      <ion-button (click)="sendMessage($event)">
+        <ion-icon name="send"></ion-icon>
+      </ion-button>
+    </ion-item>
+  </div>
+
+</ion-content >

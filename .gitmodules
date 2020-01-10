@@ -1,0 +1,6 @@
+[submodule "src/app/aracyonetim"]
+	path = src/app/aracyonetim
+	url = https://github.com/2019-BLM441/module-170202096.git
+[submodule "src/app/map"]
+	path = src/app/map
+	url = https://github.com/2019-BLM441/module-170202100.git

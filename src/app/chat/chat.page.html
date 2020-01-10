@@ -1,0 +1,22 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      Mesajlar
+    </ion-title>
+    <ion-buttons slot="primary">
+      <ion-button (click)="logout()">
+        <ion-icon name="log-out"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+    <ion-list>
+     <div *ngFor="let chatBox of messages" class="boxed" tappable (click)="openMessage(chatBox)">
+        {{chatBox["id"]}}
+      </div>
+    </ion-list>
+ 
+</ion-content>
