@@ -14,6 +14,10 @@ const routes: Routes = [
   {
     path: '',
     loadChildren: () => import('./tabs/tabs.module').then(m => m.TabsPageModule)
+  },
+  {
+    path: 'chat-page',
+    loadChildren: () => import('./chat-page/chat-page.module').then( m => m.ChatPagePageModule)
   }
   
 

@@ -11,13 +11,12 @@ import { AppRoutingModule } from './app-routing.module';
 
 import { environment } from 'src/environments/environment';
 import { AuthenticateService } from './services/authentication.service';
+import {FirestoreService} from './services/firestore.service'
+import { AngularFireModule } from '@angular/fire';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
-
-import * as firebase from 'firebase';
 import { ReactiveFormsModule } from '@angular/forms';
-firebase.initializeApp(environment.firebase);
 
 @NgModule({
   declarations: [AppComponent],
@@ -26,6 +25,7 @@ firebase.initializeApp(environment.firebase);
      BrowserModule, 
      IonicModule.forRoot(),
      AppRoutingModule,
+     AngularFireModule.initializeApp(environment.firebase),
      AngularFireAuthModule,
      AngularFirestoreModule],
   providers: [
@@ -34,9 +34,12 @@ firebase.initializeApp(environment.firebase);
     SplashScreen,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     AuthenticateService,
+    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+    FirestoreService,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
 
   ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
+

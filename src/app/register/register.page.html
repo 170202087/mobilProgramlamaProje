@@ -31,12 +31,23 @@
     </div>
 
     <ion-item>
-      <ion-label  position="floating" color="primary">Kim kullanıyor (Kullanıcı - Servisçi)</ion-label>
+      <ion-label  position="floating" color="primary">(Kullanıcı k - Servisçi s)</ion-label>
       <ion-input type="text" formControlName="user"></ion-input>
     </ion-item>
     <div class="validation-errors">
       <ng-container *ngFor="let validation of validation_messages.user">
         <div class="error-message" *ngIf="validations_form.get('user').hasError(validation.type) && (validations_form.get('user').dirty || validations_form.get('user').touched)">
+          {{ validation.message }}
+        </div>
+      </ng-container>
+    </div>
+    <ion-item>
+      <ion-label  position="floating" color="primary">s ise rota - k ise servicçinin mail adresini giriniz</ion-label>
+      <ion-input type="text" formControlName="usage"></ion-input>
+    </ion-item>
+    <div class="validation-errors">
+      <ng-container *ngFor="let validation of validation_messages.usage">
+        <div class="error-message" *ngIf="validations_form.get('usage').hasError(validation.type) && (validations_form.get('usage').dirty || validations_form.get('usage').touched)">
           {{ validation.message }}
         </div>
       </ng-container>

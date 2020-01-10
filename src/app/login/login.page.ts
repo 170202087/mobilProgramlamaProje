@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { NavController } from '@ionic/angular';
 import { AuthenticateService } from '../services/authentication.service';
-
+import { FirestoreService, Passenger, Driver } from '../services/firestore.service';
 @Component({
   selector: 'app-login',
   templateUrl: './login.page.html',
@@ -15,11 +15,10 @@ export class LoginPage implements OnInit {
   errorMessage: string = '';
 
   constructor(
-
     private navCtrl: NavController,
     private authService: AuthenticateService,
-    private formBuilder: FormBuilder
-
+    private formBuilder: FormBuilder,
+    private fireStore: FirestoreService,
   ) { }
 
   ngOnInit() {
@@ -54,14 +53,101 @@ export class LoginPage implements OnInit {
       .then(res => {
         console.log(res);
         this.errorMessage = "";
-        this.navCtrl.navigateForward('/tabs');
+
+        var userSub = this.fireStore.findUserByEmail(value.email).subscribe(data => {
+
+
+          var datas = data.map(e => {
+            return {
+              id: e.payload.doc.id,
+              Mail: e.payload.doc.data()["Mail"],
+              ServiceMail: e.payload.doc.data()["ServiceMail"]
+            };
+          });
+
+          datas.forEach(data => {
+            console.log(data);
+
+            if (data.id as string == value.email as string) {
+             var sub = this.fireStore.getMessages(data.ServiceMail).subscribe(Messages => {
+
+                var allMessages = Messages.map(e => {
+                  return {
+                    id: e.payload.doc.id,
+                    messages: e.payload.doc.data()["messages"],
+                  };
+                });
+                allMessages.forEach(msg => {
+                  if (msg.id == data.Mail as string) {
+                    msg["id"] = data.ServiceMail;
+                    var messagesWithID = [msg]
+                    this.fireStore.user = new Passenger(data.ServiceMail, data.Mail, messagesWithID);
+
+                    this.navCtrl.navigateForward('/tabs');
+
+                  }
+                });
+                sub.unsubscribe();
+
+              });
+
+            }
+
+          });
+
+
+          userSub.unsubscribe();
+        });
+
+        var driverSub = this.fireStore.findDriverByEmail(value.email).subscribe(data => {
+
+          var datas = data.map(e => {
+            return {
+              id: e.payload.doc.id,
+              Mail: e.payload.doc.data()["Mail"],
+              Route: e.payload.doc.data()["Route"],
+              UserMails: e.payload.doc.data()["UserMails"],
+              Lat: e.payload.doc.data()["lat"],
+              Long: e.payload.doc.data()["long"],
+            };
+          });
+
+          datas.forEach(data => {
+
+            if (data.id == value.email) {
+              var sub = this.fireStore.getMessages(data.Mail).subscribe(Messages => {
+
+                var allMessages = Messages.map(e => {
+                  return {
+                    id: e.payload.doc.id,
+                    messages: e.payload.doc.data()["messages"],
+                  };
+                });
+                console.log(allMessages, " Servis Mesajlar")
+                this.fireStore.user = new Driver(data.Mail, data.UserMails, allMessages);
+                this.navCtrl.navigateForward('/tabs');
+                sub.unsubscribe();
+              });
+            }
+
+          });
+
+
+          driverSub.unsubscribe();
+
+        });
+
+
+
+
       }, err => {
         this.errorMessage = err.message;
       })
   }
 
-  goToRegisterPage() {
+  goToRegisterPage(event: any) {
     this.navCtrl.navigateForward('/register');
+    console.log("basıyor");
   }
 
 }

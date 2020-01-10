@@ -2,7 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { AuthenticateService } from '../services/authentication.service';
 import { NavController } from '@ionic/angular';
- 
+import { FirestoreService } from '../services/firestore.service';
+import { firestore } from 'firebase';
+
 @Component({
   selector: 'app-register',
   templateUrl: './register.page.html',
@@ -26,12 +28,16 @@ export class RegisterPage implements OnInit {
    ],
    'user': [
      { type: 'required', message: 'User info is required.' },
-   ]
+   ],
+   'usage': [
+    { type: 'required', message: 'Usage info is required.' },
+  ]
  };
  
   constructor(
     private navCtrl: NavController,
     private authService: AuthenticateService,
+    private fireStore: FirestoreService,
     private formBuilder: FormBuilder
   ) {}
  
@@ -48,6 +54,9 @@ export class RegisterPage implements OnInit {
       user: new FormControl('', Validators.compose([
         Validators.required,
       ])),
+      usage: new FormControl('', Validators.compose([
+        Validators.required,
+      ])),
   
     });
   }
@@ -56,10 +65,12 @@ export class RegisterPage implements OnInit {
     console.log(value);
     this.authService.registerUser(value)
      .then(res => {
+       
        console.log(res.user["uid"]);
        this.errorMessage = "";
        this.successMessage = "Your account has been created. Please log in.";
-
+     
+      this.fireStore.writeDataAfterRegisteration(value)
      }, err => {
        console.log(err);
        this.errorMessage = err.message;

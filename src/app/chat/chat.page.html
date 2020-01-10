@@ -5,7 +5,11 @@
 </ion-header>
 
 <ion-content>
-  <div class="boxed">
-    This text is enclosed in a box.
-  </div>
+
+    <ion-list>
+     <div *ngFor="let chatBox of messages" class="boxed" tappable (click)="openMessage(chatBox)">
+        {{chatBox["id"]}}
+      </div>
+    </ion-list>
+ 
 </ion-content>

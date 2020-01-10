@@ -3,9 +3,23 @@
     <ion-title>
      Harita
     </ion-title>
+    <ion-buttons slot="primary">
+      <ion-button (click)="logout()">
+        <ion-icon name="log-out"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content padding>
-  <div #mapElement class="map"></div>
+    <div *ngIf="userType == 's'">
+      <ion-item>
+        <ion-label>Konum Paylaşımını Aç</ion-label>
+        <ion-toggle [(ngModel)]="isCheck" checked></ion-toggle>
+      </ion-item>
+    </div>
+    <ion-content>
+      <div id="map" #map style="height: 100%;width:100%">
+      </div>
+  </ion-content>
 </ion-content>
